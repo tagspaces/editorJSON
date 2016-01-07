@@ -1,5 +1,5 @@
 {
-  "name": "editorJSON",
+  "name": "JSON Editor",
   "id": "editorJSON",
   "description": "A TagSpaces extension allowing editing of JSON documents.",
   "type": "editor",
