@@ -16,7 +16,7 @@
     "editor",
     "json"
   ],
-  "license": "",
+  "license": "MIT",
   "main": [
     "extension.js"
   ],
