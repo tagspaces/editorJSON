@@ -1,15 +1,13 @@
-/* Copyright (c) 2012-2015 The TagSpaces Authors. All rights reserved.
- * Use of this source code is governed by a AGPL3 license that
- * can be found in the LICENSE file. */
+/* Copyright (c) 2013-2016 The TagSpaces Authors.
+ * Use of this source code is governed by the MIT license which can be found in the LICENSE.txt file. */
 
 define(function(require, exports, module) {
   "use strict";
 
   console.log("Loading editorJSON");
-  exports.id = "editorJSON"; // ID should be equal to the directory name where the ext. is located
-  exports.title = "JSON Editor";
-  exports.type = "editor";
-  exports.supportedFileTypes = ["json"];
+
+  var extensionID = "editorJSON"; // ID should be equal to the directory name where the ext. is located
+  var extensionSupportedFileTypes = ["json"];
 
   var TSCORE = require("tscore");
 
@@ -17,12 +15,12 @@ define(function(require, exports, module) {
 
   var extensionsPath = TSCORE.Config.getExtensionPath();
 
-  var extensionDirectory = extensionsPath + "/" + exports.id;
+  var extensionDirectory = extensionsPath + "/" + extensionID;
 
   var currentContent;
   var currentFilePath;
 
-  exports.init = function(filePath, containerElementID, isViewer) {
+  function init(filePath, containerElementID, isViewer) {
     console.log("Initalization JSON Editor...");
     currentFilePath = filePath;
     require([
@@ -49,14 +47,16 @@ define(function(require, exports, module) {
   };
 
   function contentChanged() {
+
     TSCORE.FileOpener.setFileChanged(true);
   }
 
-  exports.setFileType = function(fileType) {
+  function setFileType(fileType) {
+
     console.log("setFileType not supported on this extension");
   };
 
-  exports.viewerMode = function(isViewerMode) {
+  function viewerMode(isViewerMode) {
     if (isViewerMode) {
       jsonEditor.setMode('view');
     } else {
@@ -64,7 +64,7 @@ define(function(require, exports, module) {
     }
   };
 
-  exports.setContent = function(content) {
+  function setContent(content) {
     var jsonContent;
 
     var UTF8_BOM = "\ufeff";
@@ -85,8 +85,15 @@ define(function(require, exports, module) {
     //jsonEditor.expandAll();
   };
 
-  exports.getContent = function() {
+  function getContent() {
+
     return JSON.stringify(jsonEditor.get());
   };
+
+  exports.init = init;
+  exports.getContent = getContent;
+  exports.setContent = setContent;
+  exports.viewerMode = viewerMode;
+  exports.setFileType = setFileType;
 
 });
