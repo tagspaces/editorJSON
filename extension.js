@@ -4,19 +4,15 @@
 define(function(require, exports, module) {
   "use strict";
 
-  console.log("Loading editorJSON");
-
   var extensionID = "editorJSON"; // ID should be equal to the directory name where the ext. is located
   var extensionSupportedFileTypes = ["json"];
 
+  console.log("Loading " + extensionID);
+
   var TSCORE = require("tscore");
-
   var jsonEditor;
-
   var extensionsPath = TSCORE.Config.getExtensionPath();
-
   var extensionDirectory = extensionsPath + "/" + extensionID;
-
   var currentContent;
   var currentFilePath;
 
@@ -44,7 +40,7 @@ define(function(require, exports, module) {
         console.error("Loading file " + filePath + " failed " + error);
       });
     });
-  };
+  }
 
   function contentChanged() {
 
@@ -54,7 +50,7 @@ define(function(require, exports, module) {
   function setFileType(fileType) {
 
     console.log("setFileType not supported on this extension");
-  };
+  }
 
   function viewerMode(isViewerMode) {
     if (isViewerMode) {
@@ -62,7 +58,7 @@ define(function(require, exports, module) {
     } else {
       jsonEditor.setMode('tree');
     }
-  };
+  }
 
   function setContent(content) {
     var jsonContent;
@@ -83,12 +79,12 @@ define(function(require, exports, module) {
     //console.log("Content: "+JSON.stringify(jsonConten));
     jsonEditor.set(jsonContent);
     //jsonEditor.expandAll();
-  };
+  }
 
   function getContent() {
 
     return JSON.stringify(jsonEditor.get());
-  };
+  }
 
   exports.init = init;
   exports.getContent = getContent;
