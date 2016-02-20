@@ -1,7 +1,7 @@
 {
   "name": "JSON Editor",
   "id": "editorJSON",
-  "description": "A TagSpaces extension allowing editing of JSON documents.",
+  "description": "A TagSpaces extension allowing viewing and editing of JSON documents.",
   "type": "editor",
   "version": "1.0.0",
   "dependencies": {
