@@ -23,7 +23,7 @@ If you want to extend this extensions, please follow our general [extension deve
 
 ## Screenshots
 
-![Screenshot of the editorJSON](http://tagspaces.org/extensions/editorHTML/editorJSON-screenshot.png)
+![Screenshot of the editorJSON](http://tagspaces.org/extensions/editorJSON/editorJSON-screenshot.png)
 
 ## License
 
