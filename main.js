@@ -49,6 +49,26 @@ $(document).ready(function () {
             });
     });
 
+    $('#markdownHelpModal').on('show.bs.modal', function () {
+        $.ajax({
+                url: 'libs/jsoneditor/docs/shortcut_keys.md',
+                type: 'GET'
+            })
+            .done(function (jsonData) {
+                //console.log("DATA: " + mdData);
+                if (marked) {
+                    var modalBody = $("#markdownHelpModal .modal-body");
+                    modalBody.html(marked(jsonData, {sanitize: true}));
+                    handleLinks(modalBody);
+                } else {
+                    console.log("markdown to html transformer not found");
+                }
+            })
+            .fail(function (data) {
+                console.warn("Loading file failed " + data);
+            });
+    });
+
     function handleLinks($element) {
         $element.find("a[href]").each(function () {
             var currentSrc = $(this).attr("href");
@@ -87,13 +107,13 @@ $(document).ready(function () {
     }
 
 });
-function viewerMode(isViewerMode) {
-    if (isViewerMode) {
-        jsonEditor.setMode('view');
-    } else {
-        jsonEditor.setMode('tree');
-    }
-}
+//function viewerMode(isViewerMode) {
+//    if (isViewerMode) {
+//        jsonEditor.setMode('view');
+//    } else {
+//        jsonEditor.setMode('tree');
+//    }
+//}
 function contentChanged(isViewer) {
     console.log('Content changed');
 }
@@ -121,6 +141,5 @@ function setContent(content, fileDirectory, isViewer) {
     $htmlContent.append('<div id="jsonEditor"></div>')
         .css("background-color", "white")
     jsonEditor = new JSONEditor(document.getElementById("jsonEditor"), options, json);
-
 
 }
