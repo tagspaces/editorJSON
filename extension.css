@@ -18,3 +18,22 @@
     background: #e3eaf6 url("img/jsoneditor-icons.png");
     color: #4D4D4D;
 }*/
+#htmlContent {
+    overflow: auto;
+    height: 100%;
+}
+#aboutExtensionModal img {
+    max-width: 100%;
+}
+
+#aboutExtensionModal h1 {
+    font-size: 22px;
+}
+
+#aboutExtensionModal h2 {
+    font-size: 20px;
+}
+
+#aboutExtensionModal h3 {
+    font-size: 18px;
+}
