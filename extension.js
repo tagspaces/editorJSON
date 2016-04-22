@@ -69,9 +69,7 @@ define(function (require, exports, module) {
         if (content.indexOf(UTF8_BOM) === 0) {
             content = content.substring(1, content.length);
         }
-
         // console.log(jsonContent);
-        //console.log("Content: "+JSON.stringify(jsonConten));
         //jsonEditor.setContent(jsonContent);
         //jsonEditor.expandAll();
         var contentWindow = document.getElementById("iframeViewer").contentWindow;

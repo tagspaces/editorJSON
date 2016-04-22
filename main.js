@@ -107,39 +107,46 @@ $(document).ready(function () {
     }
 
 });
-//function viewerMode(isViewerMode) {
-//    if (isViewerMode) {
-//        jsonEditor.setMode('view');
-//    } else {
-//        jsonEditor.setMode('tree');
-//    }
-//}
+var jsonEditor;
 function contentChanged(isViewer) {
     console.log('Content changed');
 }
+
 function setContent(content, fileDirectory, isViewer) {
     var $htmlContent = $('#htmlContent');
-    var jsonEditor;
+
+    console.log("content: " + JSON.stringify(content));
+    console.debug(content);
 
     if (fileDirectory.indexOf("file://") === 0) {
         fileDirectory = fileDirectory.substring(("file://").length, fileDirectory.length);
     }
     var options = {
-        mode: isViewer ? 'view' : 'tree',
+        mode: 'code',
         modes: ['code', 'form', 'text', 'tree', 'view'], // allowed modes
         onError: function (err) {
             alert(err.toString());
         },
-        change: contentChanged
+        change: contentChanged,
+        object: content
     };
     var json = {
-        "array": [],
-        "boolean": true,
-        "null": null,
-        "object": content
+        object : content
     };
+
     $htmlContent.append('<div id="jsonEditor"></div>')
         .css("background-color", "white")
-    jsonEditor = new JSONEditor(document.getElementById("jsonEditor"), options, json);
-
+    var container = document.getElementById('jsonEditor');
+    //console.debug(json);
+    if(!!Object.keys(json) &&
+        typeof json !== 'content' &&
+        (typeof json !== 'function' ||
+        json === null)){
+        console.debug(Object.keys(content));
+        jsonEditor = new JSONEditor(container,options, json);
+    } else {
+        throw new TypeError("Object.keys called on non-object")
+    }
+    //console.debug(json);
+    //console.debug(jsonEditor);
 }
