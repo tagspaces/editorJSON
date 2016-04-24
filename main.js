@@ -142,16 +142,17 @@ function setContent(content, fileDirectory, isViewer) {
         typeof json !== 'content' &&
         (typeof json !== 'function' ||
         json === null)) {
-        console.debug(Object.keys(content));
+        //console.debug(Object.keys(content));
         if(options.mode === 'view' || options.mode === 'tree'){
-            console.log('SET SCHEMA CONTENT');
-           // jsonEditor = new JSONEditor.setSchema(json);
+           // console.log('SET SCHEMA CONTENT');
+            jsonEditor = new JSONEditor(container, options);
+            jsonEditor.set(json);
         } else if (options.mode !== 'view' || options.mode !== 'tree') {
-            console.log('SET CONTENT');
+           // console.log('SET CONTENT');
             jsonEditor = new JSONEditor(container, options);
             jsonEditor.set(json);
         } else {
-            throw new TypeError("option mode error");
+            throw new TypeError("Option mode error");
         }
     } else {
         throw new TypeError("Object.keys called on non-object");
