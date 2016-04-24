@@ -12,7 +12,7 @@ define(function (require, exports, module) {
     var TSCORE = require("tscore");
     var jsonEditor, containerElID, currentFilePath, $containerElement;
     var extensionsPath = TSCORE.Config.getExtensionPath();
-
+    var JSONEditor;
     var extensionDirectory = TSCORE.Config.getExtensionPath() + "/" + extensionID;
 
     function init(filePath, containerElementID, isViewer) {
@@ -30,9 +30,9 @@ define(function (require, exports, module) {
             //"nwfaketop": "",
             "src": extensionDirectory + "/index.html?&locale=" + TSCORE.currentLanguage,
         }));
-        //jsonEditor = new JSONEditor(document.getElementById("jsonEditor"), options);
-        TSCORE.IO.loadTextFilePromise(filePath).then(function (content) {
+        TSCORE.IO.loadTextFilePromise(filePath).then(function (content,isViewerMode) {
             exports.setContent(content);
+            exports.viewerMode(isViewerMode);
         }, function (error) {
             TSCORE.hideLoadingAnimation();
             TSCORE.showAlertDialog("Loading " + filePath + " failed.");
@@ -51,11 +51,19 @@ define(function (require, exports, module) {
     }
 
     function viewerMode(isViewerMode) {
-        if (isViewerMode) {
-            jsonEditor.setMode('view');
+        var jsonContent = isViewerMode;
+        console.log('VIEWER MODE:  ' + jsonContent)
+        var contentWindow = document.getElementById("iframeViewer").contentWindow;
+        if (typeof contentWindow.viewerMode === "function") {
+            contentWindow.viewerMode(jsonContent);
         } else {
-            jsonEditor.setMode('tree');
+            TSCORE.showAlertDialog("Error viewerMode");
         }
+        //if (isViewerMode) {
+        //    jsonEditor.setMode('view');
+        //} else {
+        //    jsonEditor.setMode('tree');
+        //}
     }
 
     function setContent(content) {

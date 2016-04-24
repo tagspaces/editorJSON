@@ -34,11 +34,11 @@ $(document).ready(function () {
                 url: 'README.md',
                 type: 'GET'
             })
-            .done(function (mdData) {
+            .done(function (jsonData) {
                 //console.log("DATA: " + mdData);
                 if (marked) {
                     var modalBody = $("#aboutExtensionModal .modal-body");
-                    modalBody.html(marked(mdData, {sanitize: true}));
+                    modalBody.html(marked(jsonData, {sanitize: true}));
                     handleLinks(modalBody);
                 } else {
                     console.log("markdown to html transformer not found");
@@ -107,22 +107,22 @@ $(document).ready(function () {
     }
 
 });
+
 var jsonEditor;
-function contentChanged(isViewer) {
+function contentChanged() {
     console.log('Content changed');
 }
-
 function setContent(content, fileDirectory, isViewer) {
     var $htmlContent = $('#htmlContent');
-
     console.log("content: " + JSON.stringify(content));
     console.debug(content);
-
     if (fileDirectory.indexOf("file://") === 0) {
         fileDirectory = fileDirectory.substring(("file://").length, fileDirectory.length);
     }
     var options = {
-        mode: 'code',
+        search: true,
+        history: true,
+        mode: 'code', //isViewer ? 'tree' : "view",
         modes: ['code', 'form', 'text', 'tree', 'view'], // allowed modes
         onError: function (err) {
             alert(err.toString());
@@ -131,22 +131,41 @@ function setContent(content, fileDirectory, isViewer) {
         object: content
     };
     var json = {
-        object : content
+        object: content
     };
 
     $htmlContent.append('<div id="jsonEditor"></div>')
         .css("background-color", "white")
     var container = document.getElementById('jsonEditor');
     //console.debug(json);
-    if(!!Object.keys(json) &&
+    if (!!Object.keys(json) &&
         typeof json !== 'content' &&
         (typeof json !== 'function' ||
-        json === null)){
+        json === null)) {
         console.debug(Object.keys(content));
-        jsonEditor = new JSONEditor(container,options, json);
+        if(options.mode === 'view' || options.mode === 'tree'){
+            console.log('SET SCHEMA CONTENT');
+           // jsonEditor = new JSONEditor.setSchema(json);
+        } else if (options.mode !== 'view' || options.mode !== 'tree') {
+            console.log('SET CONTENT');
+            jsonEditor = new JSONEditor(container, options);
+            jsonEditor.set(json);
+        } else {
+            throw new TypeError("option mode error");
+        }
     } else {
-        throw new TypeError("Object.keys called on non-object")
+        throw new TypeError("Object.keys called on non-object");
     }
     //console.debug(json);
     //console.debug(jsonEditor);
+}
+function viewerMode(isViewerMode) {
+    console.log(isViewerMode);
+    if (isViewerMode) {
+        jsonEditor.setMode('tree');
+       // console.log("set view");
+    } else {
+     //   console.log("set tree");
+        jsonEditor.setMode('view');
+    }
 }
