@@ -163,10 +163,10 @@ function setContent(content, fileDirectory, isViewer) {
 function viewerMode(isViewerMode) {
     console.log(isViewerMode);
     if (isViewerMode) {
-        jsonEditor.setMode('tree');
+        jsonEditor.setMode('view');
        // console.log("set view");
     } else {
      //   console.log("set tree");
-        jsonEditor.setMode('view');
+        jsonEditor.setMode('tree');
     }
 }

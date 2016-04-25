@@ -30,7 +30,7 @@ define(function (require, exports, module) {
             //"nwfaketop": "",
             "src": extensionDirectory + "/index.html?&locale=" + TSCORE.currentLanguage,
         }));
-        TSCORE.IO.loadTextFilePromise(filePath).then(function (content,isViewerMode) {
+        TSCORE.IO.loadTextFilePromise(filePath).then(function (content, isViewerMode) {
             exports.setContent(content);
             exports.viewerMode(isViewerMode);
         }, function (error) {
@@ -52,15 +52,20 @@ define(function (require, exports, module) {
 
     function viewerMode(isViewerMode) {
         var jsonContent = isViewerMode;
-        console.log('VIEWER MODE:  ' + jsonContent)
         var contentWindow = document.getElementById("iframeViewer").contentWindow;
         if (typeof contentWindow.viewerMode === "function") {
-            contentWindow.viewerMode(jsonContent);
-        } else {
-            window.setTimeout(function () {
+            if (typeof jsonContent === "undefined") {
+                jsonContent = true;
                 contentWindow.viewerMode(jsonContent);
+            }
+        } else if (typeof contentWindow.viewerMode === "function" &&
+            jsonContent !== undefined) {
+            window.setTimeout(function () {
+                contentWindow.setContent(jsonContent);
             }, 500);
-           // TSCORE.showAlertDialog("Error viewerMode");
+        } else {
+            throw new TypeError("ViewerMode error");
+            TSCORE.showAlertDialog("ViewerMode error");
         }
     }
 
