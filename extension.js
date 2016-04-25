@@ -57,13 +57,11 @@ define(function (require, exports, module) {
         if (typeof contentWindow.viewerMode === "function") {
             contentWindow.viewerMode(jsonContent);
         } else {
-            TSCORE.showAlertDialog("Error viewerMode");
+            window.setTimeout(function () {
+                contentWindow.viewerMode(jsonContent);
+            }, 500);
+           // TSCORE.showAlertDialog("Error viewerMode");
         }
-        //if (isViewerMode) {
-        //    jsonEditor.setMode('view');
-        //} else {
-        //    jsonEditor.setMode('tree');
-        //}
     }
 
     function setContent(content) {
