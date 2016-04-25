@@ -93,11 +93,10 @@ define(function (require, exports, module) {
             console.log(jsonContent);
             contentWindow.setContent(jsonContent, fileDirectory);
         } else {
-            console.log("Error parsing JSON document. ");
             // TODO optimize setTimeout
-            //window.setTimeout(function () {
-            //    contentWindow.setContent(jsonContent, fileDirectory);
-            //}, 500);
+            window.setTimeout(function () {
+                contentWindow.setContent(jsonContent, fileDirectory);
+            }, 500);
         }
     }
 
