@@ -10,9 +10,10 @@ define(function (require, exports, module) {
     console.log("Loading " + extensionID);
 
     var TSCORE = require("tscore");
-    var jsonEditor, containerElID, currentFilePath, $containerElement;
+    var containerElID;
+    var currentFilePath;
+    var $containerElement;
     var extensionsPath = TSCORE.Config.getExtensionPath();
-    var JSONEditor;
     var extensionDirectory = TSCORE.Config.getExtensionPath() + "/" + extensionID;
 
     function init(filePath, containerElementID, isViewer) {
@@ -30,9 +31,10 @@ define(function (require, exports, module) {
             //"nwfaketop": "",
             "src": extensionDirectory + "/index.html?&locale=" + TSCORE.currentLanguage,
         }));
-        TSCORE.IO.loadTextFilePromise(filePath).then(function (content, isViewerMode) {
-            exports.setContent(content);
-            exports.viewerMode(isViewerMode);
+
+        TSCORE.IO.loadTextFilePromise(filePath).then(function (content) {
+            setContent(content);
+            viewerMode(isViewer);
         }, function (error) {
             TSCORE.hideLoadingAnimation();
             TSCORE.showAlertDialog("Loading " + filePath + " failed.");
@@ -51,61 +53,51 @@ define(function (require, exports, module) {
     }
 
     function viewerMode(isViewerMode) {
-        var jsonContent = isViewerMode;
         var contentWindow = document.getElementById("iframeViewer").contentWindow;
         if (typeof contentWindow.viewerMode === "function") {
-            if (typeof jsonContent === "undefined") {
-                jsonContent = true;
-                contentWindow.viewerMode(jsonContent);
-            }
-        } else if (typeof contentWindow.viewerMode === "function" &&
-            jsonContent !== undefined) {
-            window.setTimeout(function () {
-                contentWindow.setContent(jsonContent);
-            }, 500);
+            contentWindow.viewerMode(isViewerMode);
         } else {
-            throw new TypeError("ViewerMode error");
-            TSCORE.showAlertDialog("ViewerMode error");
+            window.setTimeout(function () {
+                if (typeof contentWindow.viewerMode === "function") {
+                  contentWindow.viewerMode(isViewerMode);
+                }
+            }, 500);
         }
     }
 
-    function setContent(content) {
-        var jsonContent;
+    function setContent(jsonContent) {
         var UTF8_BOM = "\ufeff";
-        var fileDirectory = TSCORE.TagUtils.extractContainingDirectoryPath(currentFilePath);
 
-        if (isWeb) {
-            fileDirectory = TSCORE.TagUtils.extractContainingDirectoryPath(location.href) + "/" + fileDirectory;
+        if (jsonContent.indexOf(UTF8_BOM) === 0) {
+            jsonContent = jsonContent.substring(1, jsonContent.length);
         }
-        if (content.indexOf(UTF8_BOM) === 0) {
-            content = content.substring(1, content.length);
+
+        try {
+            JSON.parse(jsonContent);
+        } catch (e) {
+            console.log("Error parsing JSON document. " + e);
+            TSCORE.FileOpener.closeFile(true);
+            TSCORE.showAlertDialog("Error parsing JSON document");
+            return false;
         }
+
         // console.log(jsonContent);
-        //jsonEditor.setContent(jsonContent);
-        //jsonEditor.expandAll();
         var contentWindow = document.getElementById("iframeViewer").contentWindow;
         if (typeof contentWindow.setContent === "function") {
-            try {
-                jsonContent = JSON.parse(content);
-            } catch (e) {
-                console.log("Error parsing JSON document. " + e);
-                TSCORE.FileOpener.closeFile(true);
-                TSCORE.showAlertDialog("Error parsing JSON document");
-                return false;
-            }
             console.log(jsonContent);
-            contentWindow.setContent(jsonContent, fileDirectory);
+            contentWindow.setContent(jsonContent, currentFilePath);
         } else {
-            // TODO optimize setTimeout
             window.setTimeout(function () {
-                contentWindow.setContent(jsonContent, fileDirectory);
+                if (typeof contentWindow.setContent === "function") {
+                  contentWindow.setContent(jsonContent);
+                }
             }, 500);
         }
     }
 
     function getContent() {
 
-        return JSON.stringify(jsonEditor.get());
+        return false; // JSON.stringify("jsonEditor.get()");
     }
 
     exports.init = init;

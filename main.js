@@ -9,6 +9,7 @@ var isWin;
 var isWeb;
 
 $(document).ready(function () {
+
     function getParameterByName(name) {
         name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
         var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
@@ -80,9 +81,6 @@ $(document).ready(function () {
         });
     }
 
-    var $htmlContent = $("#htmlContent");
-
-
     $("#printButton").on("click", function () {
         $(".dropdown-menu").dropdown('toggle');
         window.print();
@@ -103,70 +101,64 @@ $(document).ready(function () {
     });
 
     function loadExtSettings() {
-        extSettings = JSON.parse(localStorage.getItem("viewerURLSettings"));
+        extSettings = JSON.parse(localStorage.getItem("viewerJSONSettings"));
     }
 
 });
 
 var jsonEditor;
+var isViewer = true;
+var filePath;
+
 function contentChanged() {
     console.log('Content changed');
+    var msg = {command: "contentChangedInEditor", filepath: filePath};
+    window.parent.postMessage(JSON.stringify(msg), "*");
 }
-function setContent(content, fileDirectory, isViewer) {
-    var $htmlContent = $('#htmlContent');
-    console.log("content: " + JSON.stringify(content));
-    console.debug(content);
-    if (fileDirectory.indexOf("file://") === 0) {
-        fileDirectory = fileDirectory.substring(("file://").length, fileDirectory.length);
+
+function setContent(jsonContent, path) {
+    filePath = path;
+    console.log("content: " + JSON.stringify(jsonContent));
+    //content = JSON.stringify(jsonContent);
+
+    try {
+        jsonContent = JSON.parse(jsonContent);
+    } catch (e) {
+        console.log("Error parsing JSON document. " + e);
+        return false;
     }
+
     var options = {
         search: true,
         history: true,
-        mode: 'code', //isViewer ? 'tree' : "view",
+        mode: isViewer ? 'view' : "tree",
         modes: ['code', 'form', 'text', 'tree', 'view'], // allowed modes
         onError: function (err) {
             alert(err.toString());
         },
-        change: contentChanged,
-        object: content
-    };
-    var json = {
-        object: content
+        onChange: contentChanged,
     };
 
-    $htmlContent.append('<div id="jsonEditor"></div>')
-        .css("background-color", "white")
     var container = document.getElementById('jsonEditor');
-    //console.debug(json);
-    if (!!Object.keys(json) &&
-        typeof json !== 'content' &&
-        (typeof json !== 'function' ||
-        json === null)) {
-        //console.debug(Object.keys(content));
-        if(options.mode === 'view' || options.mode === 'tree'){
-           // console.log('SET SCHEMA CONTENT');
-            jsonEditor = new JSONEditor(container, options);
-            jsonEditor.set(json);
-        } else if (options.mode !== 'view' || options.mode !== 'tree') {
-           // console.log('SET CONTENT');
-            jsonEditor = new JSONEditor(container, options);
-            jsonEditor.set(json);
-        } else {
-            throw new TypeError("Option mode error");
-        }
+
+    if (!!Object.keys(jsonContent) &&
+        typeof jsonContent !== 'content' &&
+        (typeof jsonContent !== 'function' ||
+        jsonContent === null)) {
+        //console.debug(Object.keys(jsonContent));
+        jsonEditor = new JSONEditor(container, options);
+        jsonEditor.set(jsonContent);
     } else {
         throw new TypeError("Object.keys called on non-object");
     }
-    //console.debug(json);
-    //console.debug(jsonEditor);
 }
+
 function viewerMode(isViewerMode) {
+    isViewer = isViewerMode;
     console.log(isViewerMode);
     if (isViewerMode) {
         jsonEditor.setMode('view');
-       // console.log("set view");
     } else {
-     //   console.log("set tree");
         jsonEditor.setMode('tree');
     }
 }
