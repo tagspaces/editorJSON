@@ -142,12 +142,10 @@ function setContent(jsonContent, path) {
     var container = document.getElementById('jsonEditor');
 
     if (!!Object.keys(jsonContent) &&
-        typeof jsonContent !== 'content' &&
         (typeof jsonContent !== 'function' ||
         jsonContent === null)) {
         //console.debug(Object.keys(jsonContent));
-        jsonEditor = new JSONEditor(container, options);
-        jsonEditor.set(jsonContent);
+        jsonEditor = new JSONEditor(container, options, jsonContent);
     } else {
         throw new TypeError("Object.keys called on non-object");
     }
