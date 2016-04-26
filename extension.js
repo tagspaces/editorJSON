@@ -33,8 +33,8 @@ define(function(require, exports, module) {
 		}));
 
 		TSCORE.IO.loadTextFilePromise(filePath).then(function(content) {
-			setContent(content);
-			viewerMode(isViewer);
+				setContent(content);
+				viewerMode(isViewer);
 		}, function (error) {
 			TSCORE.hideLoadingAnimation();
 			TSCORE.showAlertDialog("Loading " + filePath + " failed.");
@@ -57,7 +57,7 @@ define(function(require, exports, module) {
 		if (typeof contentWindow.viewerMode === "function") {
 			contentWindow.viewerMode(isViewerMode);
 		} else {
-			window.setTimeout(function () {
+			window.setTimeout(function() {
 				if (typeof contentWindow.viewerMode === "function") {
 					contentWindow.viewerMode(isViewerMode);
 				}
@@ -87,7 +87,7 @@ define(function(require, exports, module) {
 			console.log(jsonContent);
 			contentWindow.setContent(jsonContent, currentFilePath);
 		} else {
-			window.setTimeout(function () {
+			window.setTimeout(function() {
 				if (typeof contentWindow.setContent === "function") {
 					contentWindow.setContent(jsonContent);
 				}

@@ -9,7 +9,6 @@ var isWin;
 var isWeb;
 
 $(document).ready(function() {
-
 	function getParameterByName(name) {
 		name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
 		var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
@@ -26,54 +25,54 @@ $(document).ready(function() {
 	isWin = parent.isWin;
 	isWeb = parent.isWeb;
 
-	$(document).on('drop dragend dragenter dragover', function (event) {
+	$(document).on('drop dragend dragenter dragover', function(event) {
 		event.preventDefault();
 	});
 
-	$('#aboutExtensionModal').on('show.bs.modal', function () {
+	$('#aboutExtensionModal').on('show.bs.modal', function() {
 		$.ajax({
-				url: 'README.md',
-				type: 'GET'
-			})
-			.done(function (jsonData) {
-				//console.log("DATA: " + mdData);
-				if (marked) {
-					var modalBody = $("#aboutExtensionModal .modal-body");
-					modalBody.html(marked(jsonData, {sanitize: true}));
-					handleLinks(modalBody);
-				} else {
-					console.log("markdown to html transformer not found");
-				}
-			})
-			.fail(function (data) {
-				console.warn("Loading file failed " + data);
-			});
+			url: 'README.md',
+			type: 'GET'
+		})
+		.done(function (jsonData) {
+			//console.log("DATA: " + mdData);
+			if (marked) {
+				var modalBody = $("#aboutExtensionModal .modal-body");
+				modalBody.html(marked(jsonData, {sanitize: true}));
+				handleLinks(modalBody);
+			} else {
+				console.log("markdown to html transformer not found");
+			}
+		})
+		.fail(function (data) {
+			console.warn("Loading file failed " + data);
+		});
 	});
 
-	$('#markdownHelpModal').on('show.bs.modal', function () {
+	$('#markdownHelpModal').on('show.bs.modal', function() {
 		$.ajax({
-				url: 'libs/jsoneditor/docs/shortcut_keys.md',
-				type: 'GET'
-			})
-			.done(function (jsonData) {
-				//console.log("DATA: " + mdData);
-				if (marked) {
-					var modalBody = $("#markdownHelpModal .modal-body");
-					modalBody.html(marked(jsonData, {sanitize: true}));
-					handleLinks(modalBody);
-				} else {
-					console.log("markdown to html transformer not found");
-				}
-			})
-			.fail(function (data) {
-				console.warn("Loading file failed " + data);
-			});
+			url: 'libs/jsoneditor/docs/shortcut_keys.md',
+			type: 'GET'
+		})
+		.done(function(jsonData) {
+			//console.log("DATA: " + mdData);
+			if (marked) {
+				var modalBody = $("#markdownHelpModal .modal-body");
+				modalBody.html(marked(jsonData, {sanitize: true}));
+				handleLinks(modalBody);
+			} else {
+				console.log("markdown to html transformer not found");
+			}
+		})
+		.fail(function (data) {
+			console.warn("Loading file failed " + data);
+		});
 	});
 
 	function handleLinks($element) {
-		$element.find("a[href]").each(function () {
+		$element.find("a[href]").each(function() {
 			var currentSrc = $(this).attr("href");
-			$(this).bind('click', function (e) {
+			$(this).bind('click', function(e) {
 				e.preventDefault();
 				var msg = {command: "openLinkExternally", link: currentSrc};
 				window.parent.postMessage(JSON.stringify(msg), "*");
@@ -81,7 +80,7 @@ $(document).ready(function() {
 		});
 	}
 
-	$("#printButton").on("click", function () {
+	$("#printButton").on("click", function() {
 		$(".dropdown-menu").dropdown('toggle');
 		window.print();
 	});
@@ -96,7 +95,7 @@ $(document).ready(function() {
 		debug: true,
 		lng: locale,
 		fallbackLng: 'en_US'
-	}, function () {
+	}, function() {
 		$('[data-i18n]').i18n();
 	});
 
