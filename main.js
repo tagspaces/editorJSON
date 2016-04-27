@@ -7,6 +7,9 @@
 var isCordova;
 var isWin;
 var isWeb;
+var jsonEditor;
+var isViewer = true;
+var filePath;
 
 $(document).ready(function() {
 	function getParameterByName(name) {
@@ -105,14 +108,16 @@ $(document).ready(function() {
 
 });
 
-var jsonEditor;
-var isViewer = true;
-var filePath;
-
 function contentChanged() {
 	console.log('Content changed');
 	var msg = {command: "contentChangedInEditor", filepath: filePath};
 	window.parent.postMessage(JSON.stringify(msg), "*");
+}
+
+function getContent() {
+  if(jsonEditor) {
+    return JSON.stringify(jsonEditor.get());
+  }
 }
 
 function setContent(jsonContent, path) {

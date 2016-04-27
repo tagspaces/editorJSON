@@ -96,8 +96,10 @@ define(function(require, exports, module) {
 	}
 
 	function getContent() {
-
-		return false; // JSON.stringify("jsonEditor.get()");
+		var contentWindow = document.getElementById("iframeViewer").contentWindow;
+		if (typeof contentWindow.getContent === "function") {
+			return contentWindow.getContent();
+		}
 	}
 
 	exports.init = init;
