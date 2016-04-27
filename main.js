@@ -14,8 +14,8 @@ var filePath;
 $(document).ready(function() {
   function getParameterByName(name) {
     name = name.replace(/[\[]/ , "\\\[").replace(/[\]]/ , "\\\]");
-    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)") ,
-            results = regex.exec(location.search);
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)");
+    var results = regex.exec(location.search);
     return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g , " "));
   }
 
@@ -101,7 +101,6 @@ $(document).ready(function() {
   function loadExtSettings() {
     extSettings = JSON.parse(localStorage.getItem("viewerJSONSettings"));
   }
-
 });
 
 function contentChanged() {
@@ -111,7 +110,7 @@ function contentChanged() {
 }
 
 function getContent() {
-  if(jsonEditor) {
+  if (jsonEditor) {
     return JSON.stringify(jsonEditor.get());
   }
 }
@@ -129,7 +128,7 @@ function setContent(jsonContent , path) {
     search: true ,
     history: true ,
     mode: isViewer ? 'view' : "tree" ,
-    modes: ['code' , 'form' , 'text' , 'tree' , 'view'] , // allowed modes
+    //modes: ['code' , 'form' , 'text' , 'tree' , 'view'] , // allowed modes
     onError: function(err) {
       alert(err.toString());
     } ,
