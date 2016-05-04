@@ -76,8 +76,15 @@ $(document).ready(function() {
     });
   }
 
-  $("#printButton").on("click" , function() {
-    $(".dropdown-menu").dropdown('toggle');
+  $("#aboutButton").on("click", function(e) {
+    $("#aboutExtensionModal").modal({show: true});
+  });
+
+  $("#jsonHelpButton").on("click", function(e) {
+    $("#markdownHelpModal").modal({show: true});
+  });
+
+  $("#printButton").on("click", function(e) {
     window.print();
   });
 
