@@ -90,7 +90,7 @@ $(document).ready(function() {
 
   // Init internationalization
   $.i18n.init({
-    ns: {namespaces: ['ns.viewerJSON']} ,
+    ns: {namespaces: ['ns.editorJSON']} ,
     debug: true ,
     lng: locale ,
     fallbackLng: 'en_US'
