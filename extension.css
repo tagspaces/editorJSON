@@ -1,4 +1,5 @@
 @import '../../assets/extensions.css';
+@import '../../libs/extCommon/common.js';
 
 #jsonEditor {
     border-width: 0 !important;
@@ -23,19 +24,4 @@
 #htmlContent {
     overflow: auto;
     height: 100%;
-}
-#aboutExtensionModal img {
-    max-width: 100%;
-}
-
-#aboutExtensionModal h1 {
-    font-size: 22px;
-}
-
-#aboutExtensionModal h2 {
-    font-size: 20px;
-}
-
-#aboutExtensionModal h3 {
-    font-size: 18px;
 }
