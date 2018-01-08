@@ -1,8 +1,8 @@
-/* Copyright (c) 2013-2016 The TagSpaces Authors.
+/* Copyright (c) 2013-present The TagSpaces Authors.
  * Use of this source code is governed by the MIT license which can be found in the LICENSE.txt file. */
 
 /* globals JSONEditor, marked */
-"use strict";
+'use strict';
 
 var isCordova;
 var isWin;
@@ -13,73 +13,71 @@ var filePath;
 
 $(document).ready(function() {
   function getParameterByName(name) {
-    name = name.replace(/[\[]/ , "\\\[").replace(/[\]]/ , "\\\]");
-    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)");
+    name = name.replace(/[\[]/ , '\\\[').replace(/[\]]/ , '\\\]');
+    var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
     var results = regex.exec(location.search);
-    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g , " "));
+    return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g , ' '));
   }
 
-  var locale = getParameterByName("locale");
+  var locale = getParameterByName('locale');
 
   var extSettings;
   loadExtSettings();
 
   isCordova = parent.isCordova;
   isWin = parent.isWin;
-  isWeb = parent.isWeb;
+  // isWeb = parent.isWeb;
 
   $('#markdownHelpModal').on('show.bs.modal' , function() {
     $.ajax({
       url: 'libs/jsoneditor/docs/shortcut_keys.md' ,
       type: 'GET'
     }).done(function(jsonData) {
-      //console.log("DATA: " + mdData);
+      //console.log('DATA: ' + mdData);
       if (marked) {
-        var modalBody = $("#markdownHelpModal .modal-body");
+        var modalBody = $('#markdownHelpModal .modal-body');
         modalBody.html(marked(jsonData , {sanitize: true}));
         handleLinks(modalBody);
       } else {
-        console.log("markdown to html transformer not found");
+        console.log('markdown to html transformer not found');
       }
     }).fail(function(data) {
-      console.warn("Loading file failed " + data);
+      console.warn('Loading file failed ' + data);
     });
   });
 
   function handleLinks($element) {
-    $element.find("a[href]").each(function() {
-      var currentSrc = $(this).attr("href");
+    $element.find('a[href]').each(function() {
+      var currentSrc = $(this).attr('href');
       $(this).bind('click' , function(e) {
         e.preventDefault();
-        var msg = {command: "openLinkExternally" , link: currentSrc};
-        window.parent.postMessage(JSON.stringify(msg) , "*");
+        sendMessageToHost({command: 'openLinkExternally' , link: currentSrc});
       });
     });
   }
 
-  $("#jsonHelpButton").on("click", function(e) {
-    $("#markdownHelpModal").modal({show: true});
+  $('#jsonHelpButton').on('click', function(e) {
+    $('#markdownHelpModal').modal({show: true});
   });
 
   // Init internationalization
-  $.i18n.init({
+  i18next.init({
     ns: {namespaces: ['ns.editorJSON']} ,
     debug: true ,
     lng: locale ,
     fallbackLng: 'en_US'
   } , function() {
-    $('[data-i18n]').i18n();
+    jqueryI18next.init(i18next, $);
+    $('[data-i18n]').localize();
   });
 
   function loadExtSettings() {
-    extSettings = JSON.parse(localStorage.getItem("viewerJSONSettings"));
+    extSettings = JSON.parse(localStorage.getItem('viewerJSONSettings'));
   }
 });
 
 function contentChanged() {
-  //console.log('Content changed');
-  var msg = {command: "contentChangedInEditor" , filepath: filePath};
-  window.parent.postMessage(JSON.stringify(msg) , "*");
+  sendMessageToHost({command: 'contentChangedInEditor' , filepath: filePath});
 }
 
 function getContent() {
@@ -89,18 +87,26 @@ function getContent() {
 }
 
 function setContent(jsonContent , path) {
+  var UTF8_BOM = "\ufeff";
+
+  if (jsonContent.indexOf(UTF8_BOM) === 0) {
+    jsonContent = jsonContent.substring(1 , jsonContent.length);
+  }
+
   filePath = path;
   try {
     jsonContent = JSON.parse(jsonContent);
   } catch (e) {
-    console.log("Error parsing JSON document. " + e);
+    console.log('Error parsing JSON document. ' + e);
+    // FileOpener.closeFile(true);
+    // showAlertDialog("Error parsing JSON document");
     return false;
   }
 
   var options = {
     search: true ,
     history: true ,
-    mode: isViewer ? 'view' : "tree" ,
+    mode: isViewer ? 'view' : 'tree' ,
     //modes: ['code' , 'form' , 'text' , 'tree' , 'view'] , // allowed modes
     onError: function(err) {
       alert(err.toString());
@@ -116,7 +122,7 @@ function setContent(jsonContent , path) {
     //console.debug(Object.keys(jsonContent));
     jsonEditor = new JSONEditor(container , options , jsonContent);
   } else {
-    throw new TypeError("Object.keys called on non-object");
+    throw new TypeError('Object.keys called on non-object');
   }
 }
 
