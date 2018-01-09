@@ -3,6 +3,7 @@
 
 /* globals JSONEditor, marked */
 'use strict';
+sendMessageToHost({command: 'loadDefaultTextContent'});
 
 var isCordova;
 var isWin;
