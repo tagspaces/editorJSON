@@ -87,14 +87,14 @@ function getContent() {
   }
 }
 
-function setContent(jsonContent , path) {
+function setContent(jsonContent, filePath, isViewMode) {
   var UTF8_BOM = "\ufeff";
 
   if (jsonContent.indexOf(UTF8_BOM) === 0) {
     jsonContent = jsonContent.substring(1 , jsonContent.length);
   }
 
-  filePath = path;
+  filePath = filePath;
   try {
     jsonContent = JSON.parse(jsonContent);
   } catch (e) {
@@ -112,7 +112,7 @@ function setContent(jsonContent , path) {
     onError: function(err) {
       alert(err.toString());
     } ,
-    onChange: contentChanged ,
+    onChange: contentChanged
   };
 
   var container = document.getElementById('jsonEditor');
@@ -125,6 +125,8 @@ function setContent(jsonContent , path) {
   } else {
     throw new TypeError('Object.keys called on non-object');
   }
+
+  viewerMode(isViewMode);
 }
 
 function viewerMode(isViewerMode) {
