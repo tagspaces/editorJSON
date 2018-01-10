@@ -5,9 +5,6 @@
 'use strict';
 sendMessageToHost({command: 'loadDefaultTextContent'});
 
-var isCordova;
-var isWin;
-var isWeb;
 var jsonEditor;
 var isViewer = true;
 var filePath;
@@ -24,10 +21,6 @@ $(document).ready(function() {
 
   var extSettings;
   loadExtSettings();
-
-  isCordova = parent.isCordova;
-  isWin = parent.isWin;
-  // isWeb = parent.isWeb;
 
   $('#markdownHelpModal').on('show.bs.modal' , function() {
     $.ajax({
