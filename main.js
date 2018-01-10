@@ -21,6 +21,7 @@ $(document).ready(function() {
   }
 
   var locale = getParameterByName('locale');
+  initI18N(locale, 'ns.editorJSON.json');
 
   var extSettings;
   loadExtSettings();
