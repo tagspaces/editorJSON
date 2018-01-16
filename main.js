@@ -1,74 +1,52 @@
 /* Copyright (c) 2013-present The TagSpaces Authors.
  * Use of this source code is governed by the MIT license which can be found in the LICENSE.txt file. */
 
-/* globals JSONEditor, marked */
+/* globals JSONEditor, marked, sendMessageToHost, initI18N, $, getParameterByName */
 
 'use strict';
 
 sendMessageToHost({ command: 'loadDefaultTextContent' });
 
-var jsonEditor;
-var isViewer = true;
-var filePath;
+let jsonEditor;
+let isViewer = true;
+let filePath;
 
-$(document).ready(function() {
-  var locale = getParameterByName('locale');
+$(document).ready(() => {
+  const locale = getParameterByName('locale');
   initI18N(locale, 'ns.editorJSON.json');
 
-  var extSettings;
-  loadExtSettings();
-
-  $('#markdownHelpModal').on('show.bs.modal', function() {
+  $('#markdownHelpModal').on('show.bs.modal', () => {
     $.ajax({
       url: 'libs/jsoneditor/docs/shortcut_keys.md',
       type: 'GET'
     })
-      .done(function(jsonData) {
-        //console.log('DATA: ' + mdData);
+      .done((jsonData) => {
         if (marked) {
-          var modalBody = $('#markdownHelpModal .modal-body');
+          const modalBody = $('#markdownHelpModal .modal-body');
           modalBody.html(marked(jsonData, { sanitize: true }));
           handleLinks(modalBody);
         } else {
           console.log('markdown to html transformer not found');
         }
       })
-      .fail(function(data) {
+      .fail((data) => {
         console.warn('Loading file failed ' + data);
       });
   });
 
   function handleLinks($element) {
-    $element.find('a[href]').each(function() {
-      var currentSrc = $(this).attr('href');
-      $(this).bind('click', function(e) {
+    $element.find('a[href]').each(() => {
+      const currentSrc = $(this).attr('href');
+      $(this).bind('click', (e) => {
         e.preventDefault();
         sendMessageToHost({ command: 'openLinkExternally', link: currentSrc });
       });
     });
   }
 
-  $('#jsonHelpButton').on('click', function(e) {
+  $('#jsonHelpButton').on('click', () => {
     $('#markdownHelpModal').modal({ show: true });
   });
-
-  // Init internationalization
-  i18next.init(
-    {
-      ns: { namespaces: ['ns.editorJSON'] },
-      debug: true,
-      lng: locale,
-      fallbackLng: 'en_US'
-    },
-    function() {
-      jqueryI18next.init(i18next, $);
-      $('[data-i18n]').localize();
-    }
-  );
-
-  function loadExtSettings() {
-    extSettings = JSON.parse(localStorage.getItem('viewerJSONSettings'));
-  }
 });
 
 function contentChanged() {
@@ -81,14 +59,14 @@ function getContent() {
   }
 }
 
-function setContent(jsonContent, filePath, isViewMode) {
-  var UTF8_BOM = '\ufeff';
-
+function setContent(jsonContentParam, filePathParam, isViewMode) {
+  const UTF8_BOM = '\ufeff';
+  let jsonContent = jsonContentParam;
   if (jsonContent.indexOf(UTF8_BOM) === 0) {
     jsonContent = jsonContent.substring(1, jsonContent.length);
   }
 
-  filePath = filePath;
+  filePath = filePathParam;
   try {
     jsonContent = JSON.parse(jsonContent);
   } catch (e) {
@@ -96,24 +74,24 @@ function setContent(jsonContent, filePath, isViewMode) {
     return false;
   }
 
-  var options = {
+  const options = {
     search: true,
     history: true,
     mode: isViewer ? 'view' : 'tree',
-    //modes: ['code' , 'form' , 'text' , 'tree' , 'view'] , // allowed modes
-    onError: function(err) {
-      alert(err.toString());
+    // modes: ['code' , 'form' , 'text' , 'tree' , 'view'] , // allowed modes
+    onError: (err) => {
+      console.warn(err.toString());
     },
     onChange: contentChanged
   };
 
-  var container = document.getElementById('jsonEditor');
+  const container = document.getElementById('jsonEditor');
 
   if (
     !!Object.keys(jsonContent) &&
     (typeof jsonContent !== 'function' || jsonContent === null)
   ) {
-    //console.debug(Object.keys(jsonContent));
+    // console.debug(Object.keys(jsonContent));
     jsonEditor = new JSONEditor(container, options, jsonContent);
   } else {
     throw new TypeError('Object.keys called on non-object');
