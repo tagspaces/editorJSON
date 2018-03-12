@@ -35,9 +35,9 @@ $(document).ready(() => {
   });
 
   function handleLinks($element) {
-    $element.find('a[href]').each(() => {
-      const currentSrc = $(this).attr('href');
-      $(this).bind('click', (e) => {
+    $element.find('a[href]').each((index, link) => {
+      const currentSrc = $(link).attr('href');
+      $(link).bind('click', (e) => {
         e.preventDefault();
         sendMessageToHost({ command: 'openLinkExternally', link: currentSrc });
       });
