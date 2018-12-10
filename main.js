@@ -3,8 +3,6 @@
 
 /* globals JSONEditor, marked, sendMessageToHost, initI18N, $, getParameterByName */
 
-'use strict';
-
 sendMessageToHost({ command: 'loadDefaultTextContent' });
 
 let jsonEditor;
@@ -14,6 +12,12 @@ let filePath;
 $(document).ready(() => {
   const locale = getParameterByName('locale');
   initI18N(locale, 'ns.editorJSON.json');
+
+  if (isViewer) {
+    $(document).dblclick(() => {
+      sendMessageToHost({ command: 'editDocument' });
+    });
+  }
 
   $('#markdownHelpModal').on('show.bs.modal', () => {
     $.ajax({
