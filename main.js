@@ -8,15 +8,23 @@ sendMessageToHost({ command: 'loadDefaultTextContent' });
 let jsonEditor;
 let isViewer = true;
 let filePath;
+const $document = $(document);
 
-$(document).ready(() => {
+$document.ready(() => {
   const locale = getParameterByName('locale');
   initI18N(locale, 'ns.editorJSON.json');
 
   if (isViewer) {
-    $(document).dblclick(() => {
+    $document.dblclick(() => {
       sendMessageToHost({ command: 'editDocument' });
     });
+  // } else {
+  //   window.onkeyup((e) => {
+  //     console.log('keyup ' + e);
+  //     if (e.ctrlKey && e.keyCode === 83 && filePath) {
+  //       sendMessageToHost({ command: 'saveDocument', filepath: filePath });
+  //     }
+  //   });
   }
 
   $('#markdownHelpModal').on('show.bs.modal', () => {
