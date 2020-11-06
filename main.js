@@ -1,7 +1,7 @@
 /* Copyright (c) 2013-present The TagSpaces Authors.
  * Use of this source code is governed by the MIT license which can be found in the LICENSE.txt file. */
 
-/* globals JSONEditor, marked, sendMessageToHost, initI18N, $, getParameterByName */
+/* globals JSONEditor, marked, sendMessageToHost, initI18N, $, getParameterByName, handleLinks */
 
 sendMessageToHost({ command: 'loadDefaultTextContent' });
 
@@ -18,13 +18,6 @@ $document.ready(() => {
     $document.dblclick(() => {
       sendMessageToHost({ command: 'editDocument' });
     });
-  // } else {
-  //   window.onkeyup((e) => {
-  //     console.log('keyup ' + e);
-  //     if (e.ctrlKey && e.keyCode === 83 && filePath) {
-  //       sendMessageToHost({ command: 'saveDocument', filepath: filePath });
-  //     }
-  //   });
   }
 
   $('#markdownHelpModal').on('show.bs.modal', () => {
@@ -32,7 +25,7 @@ $document.ready(() => {
       url: 'libs/jsoneditor/docs/shortcut_keys.md',
       type: 'GET'
     })
-      .done((jsonData) => {
+      .done(jsonData => {
         if (marked) {
           const modalBody = $('#markdownHelpModal .modal-body');
           modalBody.html(marked(jsonData, { sanitize: true }));
@@ -41,20 +34,10 @@ $document.ready(() => {
           console.log('markdown to html transformer not found');
         }
       })
-      .fail((data) => {
+      .fail(data => {
         console.warn('Loading file failed ' + data);
       });
   });
-
-  function handleLinks($element) {
-    $element.find('a[href]').each((index, link) => {
-      const currentSrc = $(link).attr('href');
-      $(link).bind('click', (e) => {
-        e.preventDefault();
-        sendMessageToHost({ command: 'openLinkExternally', link: currentSrc });
-      });
-    });
-  }
 
   $('#jsonHelpButton').on('click', () => {
     $('#markdownHelpModal').modal({ show: true });
@@ -91,7 +74,7 @@ function setContent(jsonContentParam, filePathParam, isViewMode) {
     history: true,
     mode: isViewer ? 'view' : 'tree',
     // modes: ['code' , 'form' , 'text' , 'tree' , 'view'] , // allowed modes
-    onError: (err) => {
+    onError: err => {
       console.warn(err.toString());
     },
     onChange: contentChanged
