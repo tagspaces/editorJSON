@@ -20,6 +20,7 @@ $document.ready(() => {
     });
   }
 
+  $('#markdownHelpModal').off();
   $('#markdownHelpModal').on('show.bs.modal', () => {
     $.ajax({
       url: 'libs/jsoneditor/docs/shortcut_keys.md',
@@ -39,6 +40,7 @@ $document.ready(() => {
       });
   });
 
+  $('#jsonHelpButton').off();
   $('#jsonHelpButton').on('click', () => {
     $('#markdownHelpModal').modal({ show: true });
   });
