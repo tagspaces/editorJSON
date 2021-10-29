@@ -1,3 +1,5 @@
+This repository is archived. Please use https://github.com/tagspaces/tagspaces-extensions instead.
+
 # JSON Editor for TagSpaces
 
 A TagSpaces extension allowing viewing and editing of JSON documents.
